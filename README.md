@@ -7,8 +7,8 @@ Extension for people who have a second Twitch account connected to LioranBoard. 
 > **NOTE:** Any double quotes in the chat message should be escaped (`Mary said "hello"` should be written as `Mary said \"hello\"`). Use the default "String: Escape" command to automate this in case the message varies.
 
 ## Installation
-1. Go to [Releases](https://github.com/Melonax/LB-Alternate-Chat-Connection/releases) and download `Alternate Chat Connection.lbe`
+1. Go to [Releases](https://github.com/Melonax/LB-Alternate-Chat-Connection/releases) and download `AlternateChatConnection.lbe`
 2. Click "Install Extension" in the LioranBoard Receiver window
-3. Select `Alternate Chat Connection.lbe` and click Open
+3. Select `AlternateChatConnection.lbe` and click Open
 4. Select the transmitter you're using (default is `tsl_transmitter.html`) and click Save
 5. The extension should work once the transmitter has reconnected
