@@ -1,0 +1,186 @@
+[extension_name]
+Alternate Chat Connection
+[insert_external]
+<div>
+  <p>Alternate Chat Connection is installed</p>
+</div>
+[insert_command]
+lioranboardclient.send('{"type": "MESSAGE", "topic": "ExtensionCommand",	"name": "Alternate Chat Connection",	"boxcount": 2,	"boxname1": "alt_oauth",	"boxtype1": "string",	"boxname2": "alt_username",	"boxtype2": "string"}');
+lioranboardclient.send('{"type": "MESSAGE", "topic": "ExtensionCommand",	"name": "Alternate Chat Message",	"boxcount": 2,	"boxname1": "message",	"boxtype1": "string",	"boxname2": "channel", "boxtype2": "string"}');
+[insert_hook]
+case "AlternateChatConnection":{
+	type = "init";
+	alt_username = LioranBoardJSON.alt_username;
+	AltChatConnection(type,alt_username,LioranBoardJSON.alt_oauth);
+}break
+
+case "AlternateChatMessage":{
+	type = "message";
+	if (LioranBoardJSON.channel == ""){
+		channel = alt_username;
+	}
+	else{
+		channel = LioranBoardJSON.channel;
+	}
+	AltChatConnection(type,channel,LioranBoardJSON.message);
+}break
+
+[insert_script]
+
+function AltChatConnection(type,channel,string){
+	switch(type){
+		case "init":{
+			AltChatConnect = (new WebSocket("wss://irc-ws.chat.twitch.tv:443"));
+			AltChatConnect.binaryType = "arraybuffer";
+			AltChatConnect.onopen = function(event) {
+				console.log("Alternate account connected to twitch chat");
+				AltChatConnect.send("PASS oauth:"+string);
+				AltChatConnect.send("NICK "+channel);
+				AltChatConnect.send("JOIN #"+channel);
+			};
+			
+			AltChatConnect.onmessage = function (data) {
+				var AltChatData = data.data;
+				if (AltChatData.includes("PING :tmi.twitch.tv")) {
+					AltChatConnect.send("PONG :tmi.twitch.tv");
+				}
+			};
+			
+			AltChatConnect.onclose = function (event) {
+				console.log("Alternate account disconnected! Please re-initialize.")
+			};
+		}break
+		
+		case "message":{
+			AltChatConnect.send("PRIVMSG #"+channel+" :"+string);
+		}break
+	}
+}
+
+[insert_over]
+[buttons_1x0]
+activepress="0.000000"
+border_size="0.000000"
+combine="0.000000"
+type="websocketaction+"
+picture=""
+text="Alternate Chat#Connection#Example"
+color="12632256.000000"
+button_id="AltChatEx"
+websocketdelay1="0.000000"
+websocketvalue8_1=""
+websocketvalue7_1=""
+websocketvalue6_1=""
+websocketvalue5_1=""
+websocketvalue4_1=""
+websocketvalue3_1=""
+websocketvalue2_1="Alternate Chat Connection: Hi, I'm an example message!"
+websocketvalue1_1="Alternate Chat Message"
+websocketaction1="71.000000"
+websocketdelay0="0.000000"
+websocketvalue8_0=""
+websocketvalue7_0=""
+websocketvalue6_0=""
+websocketvalue5_0=""
+websocketvalue4_0=""
+websocketvalue3_0=""
+websocketvalue2_0=""
+websocketvalue1_0="Leaving the channel name empty will send the message to the alternate account itself"
+websocketaction0="92.000000"
+[buttons_0x0]
+activepress="0.000000"
+border_size="0.000000"
+combine="0.000000"
+type="websocketaction+pubsubaction+"
+picture=""
+text="Alternate Chat#Connection#INIT"
+color="12632256.000000"
+button_id="AltChatIn"
+extensiontrigger0="!transmitteralways"
+pubsubaction0="7.000000"
+pubsubqueue="0.000000"
+websocketdelay7="0.000000"
+websocketvalue8_7=""
+websocketvalue7_7=""
+websocketvalue6_7=""
+websocketvalue5_7=""
+websocketvalue4_7=""
+websocketvalue3_7=""
+websocketvalue2_7=""
+websocketvalue1_7="alt_oauth"
+websocketaction7="60.000000"
+websocketdelay6="0.000000"
+websocketvalue8_6=""
+websocketvalue7_6=""
+websocketvalue6_6=""
+websocketvalue5_6=""
+websocketvalue4_6=""
+websocketvalue3_6=""
+websocketvalue2_6=""
+websocketvalue1_6="alt_username"
+websocketaction6="60.000000"
+websocketdelay5="0.000000"
+websocketvalue8_5=""
+websocketvalue7_5=""
+websocketvalue6_5=""
+websocketvalue5_5=""
+websocketvalue4_5=""
+websocketvalue3_5="/$alt_username$/"
+websocketvalue2_5="/$alt_oauth$/"
+websocketvalue1_5="Alternate Chat Connection"
+websocketaction5="71.000000"
+websocketdelay4="0.000000"
+websocketvalue8_4=""
+websocketvalue7_4=""
+websocketvalue6_4=""
+websocketvalue5_4=""
+websocketvalue4_4="alt_oauth"
+websocketvalue3_4="0_oauth"
+websocketvalue2_4="account"
+websocketvalue1_4="connect.ini"
+websocketaction4="40.000000"
+websocketdelay3="0.000000"
+websocketvalue8_3=""
+websocketvalue7_3=""
+websocketvalue6_3=""
+websocketvalue5_3=""
+websocketvalue4_3="alt_username"
+websocketvalue3_3="0"
+websocketvalue2_3="account"
+websocketvalue1_3="connect.ini"
+websocketaction3="40.000000"
+websocketdelay2="0.000000"
+websocketvalue8_2=""
+websocketvalue7_2=""
+websocketvalue6_2=""
+websocketvalue5_2=""
+websocketvalue4_2=""
+websocketvalue3_2=""
+websocketvalue2_2=""
+websocketvalue1_2="Just make sure the trigger is still set to !transmitteralways if you paste it elsewhere"
+websocketaction2="92.000000"
+websocketdelay1="0.000000"
+websocketvalue8_1=""
+websocketvalue7_1=""
+websocketvalue6_1=""
+websocketvalue5_1=""
+websocketvalue4_1=""
+websocketvalue3_1=""
+websocketvalue2_1=""
+websocketvalue1_1="You can copypaste the button to any deck you want"
+websocketaction1="92.000000"
+websocketdelay0="0.000000"
+websocketvalue8_0=""
+websocketvalue7_0=""
+websocketvalue6_0=""
+websocketvalue5_0=""
+websocketvalue4_0=""
+websocketvalue3_0=""
+websocketvalue2_0=""
+websocketvalue1_0="This button will send your account data from connect.ini to the transmitter at launch"
+websocketaction0="92.000000"
+[configs]
+name="Alternate Chat Connect"
+background_color="10830180.000000"
+grid_height="2.000000"
+grid_width="2.000000"
