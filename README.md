@@ -4,6 +4,8 @@ Extension for people who have a second Twitch account connected to LioranBoard. 
 * ***Alternate Chat Connection*** - Sets up the initial connection. Use with Extension trigger !transmitteralways.
 * ***Alternate Chat Message*** - Sends a message to chat. Identical to the "Twitch: Chat Message" command.
 
+![Example](https://user-images.githubusercontent.com/55620774/115151337-be9ffc00-a06c-11eb-8320-81bd5bf3a49d.gif)
+
 > **NOTE:** Any double quotes in the chat message should be escaped (`Mary said "hello"` should be written as `Mary said \"hello\"`). Use the default "String: Escape" command to automate this in case the message varies.
 
 ## Installation
