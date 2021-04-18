@@ -1,5 +1,5 @@
 # LioranBoard: Alternate Chat Connection
-Extension for people who have a second account connected to LioranBoard. Sets up a chat connection for the alternate account, which can be useful for broadcaster-only commands such as .mod and .vip. Includes an example deck and two extension commands:
+Extension for people who have a second Twitch account connected to LioranBoard. Sets up a chat connection for the alternate account, which can be useful for broadcaster-only commands such as .mod and .vip. Includes an example deck and two extension commands:
 
 * ***Alternate Chat Connection*** - Sets up the initial connection. Use with Extension trigger !transmitteralways.
 * ***Alternate Chat Message*** - Sends a message to chat. Works the same way as the "Twitch: Chat Message" command.
