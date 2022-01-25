@@ -1,0 +1,79 @@
+[extension_name]
+Alternate Chat Connection
+[extension_info]
+This extension will connect to chat with an additional account
+	v1.2 adjusted & released by Melonax 25 January 2022
+	v1.1 adjusted for new transmitter by RoadieGamer 26 December 2021
+	v1.0 ported to LB2 by Melonax 10 December 2021
+	Original LB1 extension by Melonax 
+[insert_external]
+<div>
+  <p>Alternate Chat Connection is installed</p>
+</div>
+[insert_command]
+
+LB.extCommand('Alternate Chat Connection', 3355443, 52, {
+	'alt_oauth': ['Auth Token',15,''],
+	'alt_username': ['Account Login Name',14,'']
+	})
+LB.extCommand('Alternate Chat Message',3355443,52,{
+	'message': ['Message',14,'',1.4],
+	'channel': ['Channel Name',14,'',0.6]
+	})
+	
+
+[insert_hook]
+case "Alternate Chat Connection":{
+	type = "init";
+	alt_username = LioranBoardJSON.alt_username;
+	AltChatConnection(type,alt_username,LioranBoardJSON.alt_oauth);
+}break
+
+case "Alternate Chat Message":{
+	type = "message";
+	if (LioranBoardJSON.channel == ""){
+		channel = alt_username;
+	}
+	else{
+		channel = LioranBoardJSON.channel;
+	}
+	AltChatConnection(type,channel,LioranBoardJSON.message);
+}break
+
+[insert_script]
+
+function AltChatConnection(type,channel,string){
+	switch(type){
+		case "init":{
+			AltChatConnect = (new WebSocket("wss://irc-ws.chat.twitch.tv:443"));
+			AltChatConnect.binaryType = "arraybuffer";
+			AltChatConnect.onopen = function(event) {
+				console.log("Alternate account ["+channel+"] connected to twitch chat");
+				LB.alert("Alternate account ["+channel+"] connected to Twitch chat");
+				AltChatConnect.send("PASS oauth:"+string);
+				AltChatConnect.send("NICK "+channel);
+				AltChatConnect.send("JOIN #"+channel);
+			};
+			
+			AltChatConnect.onmessage = function (data) {
+				var AltChatData = data.data;
+				//console.log(AltChatData);
+				if (AltChatData.includes("PING :tmi.twitch.tv")) {
+					AltChatConnect.send("PONG :tmi.twitch.tv");
+				}
+			};
+			
+			AltChatConnect.onclose = function (event) {
+				console.log("Alternate account disconnected! Please re-initialize.");
+				LB.alert("Alternate account ["+channel+"] disconnected from Twitch chat.")
+			};
+		}break
+		
+		case "message":{
+			AltChatConnect.send("PRIVMSG #"+channel+" :"+string);
+		}break
+	}
+}
+
+[insert_over]
+{ "deck_data": "{ \"background_color\": 10830180.0, \"on\": 1.0, \"grid_y\": 3.0, \"snap_grid\": true, \"lb_version\": \"1.99.5\", \"background_image\": \"\", \"encrypted\": 0.0, \"adaptive_resizing\": true, \"unique_id\": \"20211210230736432583175\", \"button_list\": [ { \"color\": 4671303.0, \"persistent\": 0.0, \"text\": \"connect\\nalternate\\nto chat\\n(required*)\", \"release_duration\": 0.0, \"queueable\": 0.0, \"command_list\": [ { \"cmd\": 4.0, \"obsid\": \"Main\", \"pos\": 0.0, \"vis\": 1.0, \"ms\": 1000.0, \"sel\": 0.0, \"dis\": 0.0, \"xpan\": 23.0, \"b0\": \"To use this extension, you must have more than one account connected to LioranBoard via\\nthe Twitch Connections window!\", \"v0\": 0.0 }, { \"cmd\": 6.0, \"obsid\": \"Main\", \"pos\": 1.0, \"vis\": 1.0, \"ms\": 0.0, \"sel\": 0.0, \"dis\": 0.0, \"xpan\": 60.0, \"b0\": \"This button will automatically connect your first available alternate account to Twitch chat\\nwhenever you (re)connect to the transmitter.\\n\\n* You may copy this button to another deck. Make sure the trigger and delays remain the same!\", \"v0\": 2.0 }, { \"b1\": \"auth\", \"cmd\": 105.0, \"obsid\": \"Main\", \"pos\": 2.0, \"vis\": 1.0, \"ms\": 1000.0, \"sel\": 0.0, \"dis\": 0.0, \"xpan\": 0.0, \"b0\": \"\\\/$global.twitch_accounts[1]$\\\/\", \"v0\": 1.0 }, { \"cmd\": 0.0, \"obsid\": \"Main\", \"pos\": 3.0, \"alt_username\": \"\\\/$global.twitch_accounts[1]$\\\/\", \"vis\": 1.0, \"ms\": 1000.0, \"sel\": 0.0, \"dis\": 0.0, \"xpan\": 0.0, \"alt_oauth\": \"auth\", \"extcmd\": \"Alternate Chat Connection\", \"ext\": \"Transmitter\" } ], \"press_type\": 0.0, \"x\": 0.0, \"border\": 2.0, \"image\": \"\", \"triggers\": [ { \"group_id\": \"\", \"type\": \"Streamdeck\\\/Transmitter Connected\", \"button_id\": \"ID20\", \"trg\": 10.0 } ], \"group_id\": \"\", \"overlappable\": 0.0, \"init_variable\": \"\", \"deck\": 6.0, \"width\": 0.5, \"button_id\": \"ID20\", \"button_duration\": 1000.0, \"y\": 0.0, \"switch_deck\": \"\", \"height\": 0.66666666666666674068153497501044, \"release_list\": [ ], \"functions\": 17.0, \"stretch\": 0.0 }, { \"color\": 4671303.0, \"persistent\": 0.0, \"text\": \"send\\nexample\\nmessages\", \"release_duration\": 0.0, \"queueable\": 0.0, \"command_list\": [ { \"cmd\": 5.0, \"obsid\": \"Main\", \"pos\": 0.0, \"vis\": 1.0, \"ms\": 0.0, \"sel\": 0.0, \"dis\": 0.0, \"xpan\": 23.0, \"b0\": \"Message = message you want to send\\nChannel Name = channel you want to send the message to (empty = same as connected account)\", \"v0\": 2.0 }, { \"cmd\": 0.0, \"obsid\": \"Main\", \"pos\": 1.0, \"vis\": 1.0, \"ms\": 0.0, \"sel\": 0.0, \"dis\": 0.0, \"xpan\": 0.0, \"message\": \"This message was sent by the alternate account (according to LioranBoard)\", \"extcmd\": \"Alternate Chat Message\", \"channel\": \"\", \"ext\": \"Transmitter\" }, { \"b1\": \"\\\/$global.twitch_accounts[1]$\\\/\", \"cmd\": 148.0, \"obsid\": \"Main\", \"pos\": 2.0, \"vis\": 1.0, \"ms\": 0.0, \"sel\": 0.0, \"dis\": 0.0, \"xpan\": 0.0, \"b0\": \"This message was sent by the main account (according to LioranBoard)\" } ], \"press_type\": 0.0, \"x\": 0.5, \"border\": 2.0, \"image\": \"\", \"triggers\": [ ], \"group_id\": \"\", \"overlappable\": 0.0, \"init_variable\": \"\", \"deck\": 6.0, \"width\": 0.5, \"button_id\": \"ID22\", \"button_duration\": 0.0, \"y\": 0.0, \"switch_deck\": \"\", \"height\": 0.66666666666666674068153497501044, \"release_list\": [ ], \"functions\": 1.0, \"stretch\": 0.0 }, { \"color\": 12632256.0, \"persistent\": 0.0, \"text\": \">\\nnext\\ndeck\", \"release_duration\": 0.0, \"queueable\": 0.0, \"command_list\": [ ], \"press_type\": 0.0, \"x\": 0.5, \"border\": 2.0, \"image\": \"\", \"triggers\": [ ], \"group_id\": \"\", \"overlappable\": 0.0, \"init_variable\": \"\", \"deck\": 6.0, \"width\": 0.5, \"button_id\": \"ID41\", \"button_duration\": 0.0, \"y\": 0.66666666666666662965923251249478, \"switch_deck\": \"Next Deck\", \"height\": 0.33333333333333331482961625624739, \"release_list\": [ ], \"functions\": 512.0, \"stretch\": 0.0 }, { \"color\": 12632256.0, \"persistent\": 0.0, \"text\": \"< \\nprevious\\ndeck\", \"release_duration\": 0.0, \"queueable\": 0.0, \"command_list\": [ ], \"press_type\": 0.0, \"x\": 0.0, \"border\": 2.0, \"image\": \"\", \"triggers\": [ ], \"group_id\": \"\", \"overlappable\": 0.0, \"init_variable\": \"\", \"deck\": 6.0, \"width\": 0.5, \"button_id\": \"ID43\", \"button_duration\": 0.0, \"y\": 0.66666666666666662965923251249478, \"switch_deck\": \"Previous Deck\", \"height\": 0.33333333333333331482961625624739, \"release_list\": [ ], \"functions\": 512.0, \"stretch\": 0.0 } ], \"deck_name\": \"Alternate Chat Connection\", \"grid_x\": 2.0, \"stretch\": 0.0 }", "unique_id": "20211210230736432583175", "deck_verification_code": "ed47f9e5504c7da5d23d1f1d6a9fc3c7b49229f6", "include_image": { } }
